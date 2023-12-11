@@ -1,0 +1,173 @@
+xxxxxxxxxxmmmmmmmmmmmmmllllllllllll
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+
+public class Main {
+
+    public static void main(String[] args) {
+        try {
+            // Ruta al archivo XML
+            String rutaXml = "ruta/al/archivo.xml";
+
+            // Configuración de la conexión a la base de datos (ajusta según tu configuración)
+            String url = "jdbc:mysql://tu_host/tu_base_de_datos";
+            String usuario = "tu_usuario";
+            String contraseña = "tu_contraseña";
+
+            // Conecta a la base de datos
+            Connection conexion = DriverManager.getConnection(url, usuario, contraseña);
+
+            // Configuración del parser XML
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.parse(rutaXml);
+
+            // Obtiene la lista de nodos "estudiantes"
+            NodeList estudiantesNodes = document.getElementsByTagName("estudiantes");
+
+            // Itera sobre los nodos "estudiantes" y realiza la inserción en la base de datos
+            for (int i = 0; i < estudiantesNodes.getLength(); i++) {
+                Element estudianteElement = (Element) estudiantesNodes.item(i);
+
+                String id = estudianteElement.getElementsByTagName("ID").item(0).getTextContent();
+                String nombre = estudianteElement.getElementsByTagName("Nombre").item(0).getTextContent();
+                String edad = estudianteElement.getElementsByTagName("Edad").item(0).getTextContent();
+                String direccion = estudianteElement.getElementsByTagName("Direccion").item(0).getTextContent();
+                String correoElectronico = estudianteElement.getElementsByTagName("CorreoElectronico").item(0).getTextContent();
+
+                // Inserta los datos en la base de datos
+                String sql = "INSERT INTO estudiantes (ID, Nombre, Edad, Direccion, CorreoElectronico) VALUES (?, ?, ?, ?, ?)";
+                try (PreparedStatement statement = conexion.prepareStatement(sql)) {
+                    statement.setString(1, id);
+                    statement.setString(2, nombre);
+                    statement.setString(3, edad);
+                    statement.setString(4, direccion);
+                    statement.setString(5, correoElectronico);
+
+                    statement.executeUpdate();
+                }
+            }
+
+            // Cierra la conexión a la base de datos
+            conexion.close();
+
+            System.out.println("Datos insertados correctamente en la base de datos.");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+json 
+''''''''''''''''''''''''''''''''''''
+egúrate de tener el controlador JDBC adecuado para tu base de datos en tu proyecto. A continuación, se presenta un ejemplo para MySQL:
+
+java
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.FileReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+
+public class Main {
+
+    public static void main(String[] args) {
+        try {
+            // Ruta al archivo JSON
+            String rutaJson = "ruta/al/archivo.json";
+
+            // Configuración de la conexión a la base de datos (ajusta según tu configuración)
+            String url = "jdbc:mysql://tu_host/tu_base_de_datos";
+            String usuario = "tu_usuario";
+            String contraseña = "tu_contraseña";
+
+            // Conecta a la base de datos
+            Connection conexion = DriverManager.getConnection(url, usuario, contraseña);
+
+            // Lee el JSON desde el archivo
+            FileReader reader = new FileReader(rutaJson);
+            JSONObject jsonObject = new JSONObject(reader);
+
+            // Obtiene la lista de objetos "estudiantes"
+            JSONArray estudiantesArray = jsonObject.getJSONArray("estudiantes");
+
+            // Itera sobre los objetos "estudiantes" y realiza la inserción en la base de datos
+            for (int i = 0; i < estudiantesArray.length(); i++) {
+                JSONObject estudianteObject = estudiantesArray.getJSONObject(i);
+
+                String id = estudianteObject.getString("ID");
+                String nombre = estudianteObject.getString("Nombre");
+                String edad = estudianteObject.getString("Edad");
+                String direccion = estudianteObject.getString("Direccion");
+                String correoElectronico = estudianteObject.getString("CorreoElectronico");
+
+                // Inserta los datos en la base de datos
+                String sql = "INSERT INTO estudiantes (ID, Nombre, Edad, Direccion, CorreoElectronico) VALUES (?, ?, ?, ?, ?)";
+                try (PreparedStatement statement = conexion.prepareStatement(sql)) {
+                    statement.setString(1, id);
+                    statement.setString(2, nombre);
+                    statement.setString(3, edad);
+                    statement.setString(4, direccion);
+                    statement.setString(5, correoElectronico);
+
+                    statement.executeUpdate();
+                }
+            }
+
+            // Cierra la conexión a la base de datos
+            conexion.close();
+
+            System.out.println("Datos insertados correctamente en la base de datos.");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+'''''''''''''''''''''''''''''''''''''
+properties 
+mport java.sql.PreparedStatement;
+import java.util.Properties;
+
+public class Main {
+
+    public static void main(String[] args) {
+        // Carga la configuración desde el archivo .properties
+        Properties propiedades = new Properties();
+        try (FileInputStream entrada = new FileInputStream("archivo.properties")) {
+            propiedades.load(entrada);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+
+        // Configuración de la conexión a la base de datos
+        String url = propiedades.getProperty("database.url");
+        String usuario = propiedades.getProperty("database.user");
+        String contraseña = propiedades.getProperty("database.password");
+
+        try {
+            // Conecta a la base de datos
+            Connection conexion = DriverManager.getConnection(url, usuario, contraseña);
+
+            // Ruta al archivo JSON
+            String rutaJson = propiedades.getProperty("json.file.path");
+
+            // Resto del código para leer el JSON y realizar la inserción, como se mostró en la respuesta anterior...
+
+            // Cierra la conexión a la base de datos
+            conexion.close();
+
+            System.out.println("Datos insertados correctamente en la base de datos.");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}

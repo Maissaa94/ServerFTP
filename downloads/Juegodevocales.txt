@@ -1,0 +1,75 @@
+package Array2D;
+
+import java.util.Scanner;
+
+public class JugarconVocales {
+
+    public static void main(String[] args) {
+//        Scanner sc = new Scanner(System.in);
+        int n;
+        do {
+            System.out.println("Introduzca numero");
+//            n = sc.nextInt();
+            n=new Scanner(System.in).nextInt();
+            if (n != 0) {
+                tratarCaso(n);
+            }
+        } while (n != 0);
+        System.out.println("Adios!!!");
+    }
+
+    public static void tratarCaso(int n) {
+        //la cadena de texto con mas vocales 
+        //la cadena de texto con menos vocales 
+        //la cadena de texto mas larga
+        //la cadena de texto menos larga
+        //la media de la longitud de las cadenas de texto
+        String texto = "", txtmasVoc = "", txtmenosVoc = "", txtmasLarga = "", txtMasCorta = "";
+        int masVocales = Integer.MIN_VALUE,
+                menosVocales = Integer.MAX_VALUE,
+                max = Integer.MIN_VALUE,
+                min = Integer.MAX_VALUE,
+                suma = 0;
+        double media;
+        for (int i = 0; i < n; i++) {
+            texto = new Scanner(System.in).nextLine();
+            suma += texto.length();
+            if (texto.length() > max) {
+                max = texto.length();
+                txtmasLarga = texto;
+            }
+            if (texto.length() < min) {
+                min = texto.length();
+                txtMasCorta = texto;
+            }
+            if (numVocales(texto) > masVocales) {
+                masVocales = numVocales(texto);
+                txtmasVoc = texto;
+            }
+            if (numVocales(texto) < menosVocales) {
+                menosVocales = numVocales(texto);
+                txtmenosVoc = texto;
+            }
+
+        }
+        media = 1.0d * suma / n;
+        System.out.println("la cadena de texto con mas vocales " + txtmasVoc);
+        System.out.println("la cadena de texto con menos vocales  " + txtmenosVoc);
+        System.out.println("la cadena de texto mas larga " + txtmasLarga);
+        System.out.println("la cadena de texto menos larga " + txtMasCorta);
+        System.out.println("la media de la longitud de las cadenas de texto " + media);
+
+    }
+
+    public static int numVocales(String txt) {
+        int r = 0;
+        txt = txt.toUpperCase();
+        for (int i = 0; i < txt.length(); i++) {
+            if (txt.charAt(i) == 'a' || txt.charAt(i) == 'e' || txt.charAt(i) == 'i' || txt.charAt(i) == 'o'
+                    || txt.charAt(i) == 'u');
+            r++;
+        }
+        return r;
+
+    }
+}
